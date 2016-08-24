@@ -10,9 +10,28 @@
 #include <stdlib.h>
 
 int sfds_init_ds(struct sfds_state* sfds){
-    // should also check for previously existing data
-    sfds->cursor_addr = 0;
-    sfds->session_id = 0;
+    uint8_t block_start[3] = {0};
+    uint8_t kb_pointer[4] = {0,0,0,0};
+    uint8_t session_id[2] = {0};
+    int hit_end = 0;
+    uint32_t cursor = 0;
+
+    /* Check for 'BKB' starting bytes. If we find them follow pointer to next kb */
+
+    do{
+        read_byte_array(block_start, 3, cursor);
+        if (block_start[0] == 'B' && block_start[1] == 'K' && block_start[2] == 'B'){
+            read_byte_array(kb_pointer, 4, cursor+3);
+            cursor = (kb_pointer[0] << 24 | kb_pointer[1] << 16 | kb_pointer[2] << 8 | kb_pointer[3]);
+            /* BKB, 32b pointer, session_id */
+            read_byte_array(session_id, 2, cursor+3+sizeof(uint32_t));
+        } else {
+            hit_end = 1;
+        }
+    } while (!hit_end);
+
+    sfds->cursor_addr = cursor;
+    sfds->session_id = session_id[1] << 8 | session_id[0];
     sfds->data_block_cursor = 0;
     return 1;
 }

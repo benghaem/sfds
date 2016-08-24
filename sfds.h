@@ -52,12 +52,12 @@ struct sfds_state
 };
 
 int sfds_init_ds(struct sfds_state* sfds);
-int sfds_reset_ds();
+int sfds_reset_ds(struct sfds_state* sfds);
 int sfds_open_session(struct sfds_state* sfds, uint8_t data_item_byte_count);
 int sfds_close_session();
 int sfds_add_data(struct sfds_state* sfds, uint8_t* data, int byte_count);
+int sfds_flush(uint8_t* raw, int size, struct sfds_state* sfds);
 
 uint32_t calculate_crc32(struct sfds_data_block* block);
-int sfds_flush(uint8_t* raw, int size, struct sfds_state* sfds);
 
 #endif /* SDS_H_ */
