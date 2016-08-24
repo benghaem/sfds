@@ -1,7 +1,7 @@
-#include "sfds.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "sfds.h"
 #include "drivers/stdio-drv.h"
 
 #define DATA_ITEM_BYTES (uint8_t)(128)
@@ -35,14 +35,14 @@ int main(int argc, char** argv){
         sfds_init_ds(&sfds);
         sfds_open_session(&sfds, DATA_ITEM_BYTES);
 
-        while (!sfds.ready_for_write){
+        while (!sfds.ready_for_flush){
             printf("%i > ", sfds.data_block_cursor);
             fgets((char*)data_buffer, DATA_ITEM_BYTES, stdin);
             if(!sfds_add_data(&sfds, data_buffer, DATA_ITEM_BYTES)){
                 printf("sizing error");
             };
             memset(data_buffer, 0, sizeof(data_buffer));
-            if (!sfds.ready_for_write){
+            if (!sfds.ready_for_flush){
                 printf("data block items: %i\n", sfds.data_blocks[sfds.data_block_cursor].items);
             }
         }
@@ -54,7 +54,7 @@ int main(int argc, char** argv){
         printf("db1 item count: %i\n", sfds.data_blocks[1].items);
 
 
-        to_raw_bytes(data_raw, sizeof(data_raw), &sfds);
+        sfds_flush(data_raw, sizeof(data_raw), &sfds);
         fwrite(data_raw, sizeof(uint8_t), sizeof(data_raw), fp);
         fclose(fp);
     }
