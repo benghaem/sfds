@@ -12,6 +12,12 @@
 #include <stdint.h>
 #include <stdio.h>
 
+#ifndef USE_SD_DRV
+#include "drivers/stdio-drv.h"
+#else
+#include "drivers/sd-drv.h"
+#endif
+
 #define DATA_BLOCK_COUNT (2)
 
 struct sfds_data_block
@@ -33,13 +39,16 @@ struct sfds_key_block
 struct sfds_state
 {
     uint32_t cursor_addr;
-    uint16_t session_id;
     uint8_t data_item_byte_count;
+    uint16_t session_id;
+
     struct sfds_key_block key_block;
+
+    struct sfds_data_block data_blocks[DATA_BLOCK_COUNT];
     uint8_t data_block_cursor;
     uint8_t data_block_max_items;
-    struct sfds_data_block data_blocks[DATA_BLOCK_COUNT];
-    uint8_t ready_for_write;
+
+    uint8_t ready_for_flush;
 };
 
 int sfds_init_ds(struct sfds_state* sfds);
@@ -49,6 +58,6 @@ int sfds_close_session();
 int sfds_add_data(struct sfds_state* sfds, uint8_t* data, int byte_count);
 
 uint32_t calculate_crc32(struct sfds_data_block* block);
-void to_raw_bytes(uint8_t* raw, int size, struct sfds_state* sfds);
+int sfds_flush(uint8_t* raw, int size, struct sfds_state* sfds);
 
 #endif /* SDS_H_ */

@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "drivers/stdio-drv.h"
 
 #define DATA_ITEM_BYTES (uint8_t)(128)
 
