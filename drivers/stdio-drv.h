@@ -4,7 +4,7 @@
 #ifndef _STDIO_DRV_
 #define _STDIO_DRV_
 
-#define STDIO_DRV_FILE_SIZE (524288) //512k
+#define STDIO_DRV_FILE_SIZE 524288 //512k
 
 void setup_stdio_drv(const char* filename);
 void close_stdio_drv(const char* filename);

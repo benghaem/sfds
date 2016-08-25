@@ -46,7 +46,11 @@ int read_byte_array(uint8_t *bytes, unsigned int len, unsigned int addr){
 
 void read_in(const char* filename){
     FILE* fp = fopen(filename, "r");
-    fread(buffer, sizeof(uint8_t), STDIO_DRV_FILE_SIZE, fp);
+    if (fp == 0){
+         printf("File not found \n");
+         return;
+    }
+    fread(buffer, sizeof(uint8_t), STDIO_DRV_FILE_SIZE - 1, fp);
     fclose(fp);
 }
 
