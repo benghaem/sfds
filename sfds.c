@@ -4,6 +4,7 @@
  *
  */
 #include "sfds.h"
+#include "crc32.h"
 #include <string.h>
 #include <stdlib.h>
 
@@ -152,8 +153,8 @@ int sfds_flush(uint8_t* raw, int size, struct sfds_state* sfds){
     memcpy(k_block+cursor, &sfds->key_block.sample_count, sizeof(uint16_t));
     cursor += sizeof(uint16_t);
 
-    //copy in checksums
-    int checksum_len = sizeof(uint32_t) * DATA_BLOCK_COUNT;
+    //copy in the defined checksums
+    int checksum_len = sizeof(uint32_t) * sfds->data_block_cursor;
     memcpy(k_block+cursor, sfds->key_block.checksums, checksum_len);
     cursor += checksum_len;
 
@@ -213,5 +214,5 @@ int sfds_write(struct sfds_state* sfds){
 }
 
 uint32_t calculate_crc32(struct sfds_data_block* d){
-    return 0;
+    return crc32(0, d->bytes, 506);
 }

@@ -18,7 +18,7 @@
 #include "drivers/sd-drv.h"
 #endif
 
-#define DATA_BLOCK_COUNT (2)
+#define DATA_BLOCK_COUNT (8)
 
 struct sfds_data_block
 {
